@@ -1,0 +1,6 @@
+backend/__pycache__
+backend/__pycache__/*
+posters/__pycache__
+posters/__pycache__/*
+posters/migrations/__pycache__
+posters/migrations/__pycache__/*

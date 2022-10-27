@@ -1,0 +1,10 @@
+<h1>Creating Post</h1>
+
+
+<form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    {{ post_form.as_p }}
+    {{ category_form.as_p }}
+    <input type="submit" value="Enviar">
+</form>
