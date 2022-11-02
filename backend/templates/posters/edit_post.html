@@ -5,6 +5,7 @@
 
     {% csrf_token %}
     {{ form.as_p }}
+    {{ category_form.as_p }}
     {{created_at.as_p}}
     {{updated_at.as_p}}
     <input type="submit" value="Enviar">

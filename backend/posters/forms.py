@@ -36,3 +36,10 @@ class CategoryForm(forms.ModelForm):
 
         model = Category
         fields = ['name']
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Comment 
+        fields = ['comment']
