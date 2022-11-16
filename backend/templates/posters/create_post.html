@@ -1,10 +1,16 @@
-<h1>Creating Post</h1>
+{% block content %}
+
+    <h1>Creating Post</h1>
 
 
-<form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">
 
-    {% csrf_token %}
-    {{ post_form.as_p }}
-    {{ category_form.as_p }}
-    <input type="submit" value="Enviar">
-</form>
+        {% csrf_token %}
+        {{ post_form.as_p }}
+        {{ category_form.as_p }}
+        <div id="map" style="width:800px;">
+            {{map | safe}}
+        </div>
+        <input type="submit" value="Enviar">
+    </form>
+{% endblock %}

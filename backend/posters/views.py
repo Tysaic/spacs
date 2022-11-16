@@ -3,10 +3,13 @@ from urllib.request import HTTPRedirectHandler
 from xml.etree.ElementTree import Comment
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-import datetime 
 from .models import (Post, Category, Comment)
 from .forms import (PostForm, CategoryForm, CommentForm)
-# Create your views here.
+from .functions import (get_client_ip, get_geolocation_by_ip)
+from folium.plugins import LocateControl, Geocoder
+import datetime 
+import folium
+import geocoder
 
 def index(request):
     now = datetime.datetime.now()
@@ -24,9 +27,15 @@ def create_post(request):
     template = 'posters/create_post.html'
     post_form = PostForm(request.POST or None)
     category_form = CategoryForm(request.POST or None)
+    map_loader = folium.Map(location=[20,20], zoom_start=2)
+    #folium.Marker([lat, lon], tooltip='Click for more', popup='CL').add_to(map_loader)
+    LocateControl().add_to(map_loader)
+    Geocoder(collapsed=True, add_marker=True).add_to(map_loader)
+    map_loader = map_loader._repr_html_()
 
     if post_form.is_valid() and category_form.is_valid():
         #Save category post here
+        print('MAPS:', request.POST)
         post = post_form.save()
         category = Category.objects.get_or_create(**category_form.cleaned_data)[0]
         post_to_category = Post.objects.get(id = post.id)
@@ -36,6 +45,7 @@ def create_post(request):
 
     context['post_form'] = post_form
     context['category_form'] = category_form
+    context['map'] = map_loader
 
     return render(request, template, context=context)
 
