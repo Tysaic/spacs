@@ -20,16 +20,9 @@ class PostForm(forms.ModelForm):
             'description',
             'content',
             'status',
-            #'category',
+            'address'
         ]
-    
-    '''
-    def save(self, commit=True):
 
-        instance = super().save(commit)
-        instance.category = Category.objects.get_or_create(name = self.cleaned_data['name'])
-        return instance
-    '''    
 class CategoryForm(forms.ModelForm):
 
     class Meta:

@@ -7,6 +7,11 @@ from .models import (Post, Category, Comment)
 from .forms import (PostForm, CategoryForm, CommentForm)
 from .functions import (get_client_ip, get_geolocation_by_ip)
 from folium.plugins import LocateControl, Geocoder
+
+from geopy.geocoders import Nominatim 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.http import JsonResponse
 import datetime 
 import folium
 import geocoder
@@ -15,6 +20,18 @@ def index(request):
     now = datetime.datetime.now()
     html = "<html><body>It is now %s.</body></html>" % now
     return HttpResponse(html)
+
+@api_view(['GET'])
+def geocoder(request):
+    value_to_geocoder = request.query_params['geocoder']
+    geolocator = Nominatim(user_agent='posters')
+    location = geolocator.geocode(value_to_geocoder)
+    latitude, longitude = location.latitude, location.longitude
+    return JsonResponse({
+        "location": location.address,
+        "latitude": latitude,
+        "longitude": longitude,
+    })
 
 def list_post(request):
 
@@ -35,7 +52,6 @@ def create_post(request):
 
     if post_form.is_valid() and category_form.is_valid():
         #Save category post here
-        print('MAPS:', request.POST)
         post = post_form.save()
         category = Category.objects.get_or_create(**category_form.cleaned_data)[0]
         post_to_category = Post.objects.get(id = post.id)

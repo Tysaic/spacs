@@ -2,15 +2,36 @@
 
     <h1>Creating Post</h1>
 
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function ajaxGeocoder(){
+
+            $.ajax({
+                url: 'http://localhost:8000/api/geocoder',
+                type: 'get',
+                data: {
+                    geocoder: $('input[name=address]').val()
+                },
+                success: function(response){
+                    console.log(response);
+                },
+                error: function(xhr){
+                    alert('No funciona');
+                }
+            })
+        }
+    </script>
 
     <form method="POST" enctype="multipart/form-data">
 
         {% csrf_token %}
         {{ post_form.as_p }}
-        {{ category_form.as_p }}
+        <input id='ubication' onclick="ajaxGeocoder();" value="Ubication" type="button">
+        
         <div id="map" style="width:800px;">
             {{map | safe}}
         </div>
+        {{ category_form.as_p }}
         <input type="submit" value="Enviar">
     </form>
 {% endblock %}

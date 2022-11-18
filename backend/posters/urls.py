@@ -8,4 +8,5 @@ urlpatterns = [
     path('edit/post/<int:pk>', views.edit_post, name='edit-post'),
     path('delete/post/<int:pk>', views.delete_post, name='delete-post'),
     path('show/post/<int:pk>', views.show_post, name='show-post'),
+    path('api/geocoder', views.geocoder, name='geocoder'),
 ]
