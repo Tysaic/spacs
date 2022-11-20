@@ -1,0 +1,22 @@
+{% block content %}
+
+    <h1>Setting Locator</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+        <!--
+        <label for="ubication">Ubication:</label>
+        <input id='ubication' name="ubication" maxlength="128" type="text" required>
+        -->
+        {{form}}
+        <button type="submit" name="locate">Locate</button>
+        <br>
+        <br>
+        <div id="map" style="width:800px;">
+            {{map | safe}}
+        </div>
+        <button type="submit" name="submit">Save</button>
+    </form>
+{% endblock %}
+
