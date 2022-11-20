@@ -4,34 +4,68 @@ from xml.etree.ElementTree import Comment
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import (Post, Category, Comment)
-from .forms import (PostForm, CategoryForm, CommentForm)
-from .functions import (get_client_ip, get_geolocation_by_ip)
+from .forms import (PostForm, CategoryForm, CommentForm, GeoLocatorForm)
+from .functions import (get_client_ip, get_geolocation_by_ip, geocoder)
 from folium.plugins import LocateControl, Geocoder
 
-from geopy.geocoders import Nominatim 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
 import datetime 
 import folium
-import geocoder
 
 def index(request):
     now = datetime.datetime.now()
     html = "<html><body>It is now %s.</body></html>" % now
     return HttpResponse(html)
 
-@api_view(['GET'])
-def geocoder(request):
-    value_to_geocoder = request.query_params['geocoder']
-    geolocator = Nominatim(user_agent='posters')
-    location = geolocator.geocode(value_to_geocoder)
-    latitude, longitude = location.latitude, location.longitude
-    return JsonResponse({
-        "location": location.address,
-        "latitude": latitude,
-        "longitude": longitude,
-    })
+
+def create_geolocator(request):
+    template = 'posters/create_geolocator.html'
+    context = {}
+    map_loader = folium.Map(location=[20,20], zoom_start=2)
+
+    if request.method == 'POST':
+
+        form = GeoLocatorForm(request.POST)
+
+        if form.is_valid(): 
+
+            if 'locate' in request.POST:
+                ubication = form.cleaned_data['ubication']
+                coordinates = geocoder(ubication)
+                location =[coordinates['latitude'], coordinates['longitude']] 
+                map_loader = folium.Map(location=location, zoom_start=15)
+                folium.CircleMarker(
+                    location=location,
+                    radius=50,
+                    popup=ubication,
+                    color = '#3186cc',
+                    fill_color='#3186cc'
+                ).add_to(map_loader)
+                form = GeoLocatorForm(initial={
+                    'latitude': location[0],
+                    'longitude': location[1],
+                    'ubication': ubication
+                })
+
+
+            elif 'submit' in request.POST:
+
+                print('Saving')
+    
+    else:
+
+        form = GeoLocatorForm(initial={'latitude': '20', 'longitude': '20'})
+    
+    context['form'] = form
+    LocateControl().add_to(map_loader)
+    Geocoder(collapsed=True, add_marker=True).add_to(map_loader)
+    map_loader = map_loader._repr_html_()
+    context['map'] = map_loader
+
+
+    return render(request, template, context=context)
 
 def list_post(request):
 
@@ -44,12 +78,6 @@ def create_post(request):
     template = 'posters/create_post.html'
     post_form = PostForm(request.POST or None)
     category_form = CategoryForm(request.POST or None)
-    map_loader = folium.Map(location=[20,20], zoom_start=2)
-    #folium.Marker([lat, lon], tooltip='Click for more', popup='CL').add_to(map_loader)
-    LocateControl().add_to(map_loader)
-    Geocoder(collapsed=True, add_marker=True).add_to(map_loader)
-    map_loader = map_loader._repr_html_()
-
     if post_form.is_valid() and category_form.is_valid():
         #Save category post here
         post = post_form.save()
@@ -61,7 +89,6 @@ def create_post(request):
 
     context['post_form'] = post_form
     context['category_form'] = category_form
-    context['map'] = map_loader
 
     return render(request, template, context=context)
 
