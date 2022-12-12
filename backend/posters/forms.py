@@ -40,5 +40,5 @@ class CommentForm(forms.ModelForm):
 class GeoLocatorForm(forms.Form):
 
     ubication = forms.CharField(label='ubication', max_length=128)
-    longitude = forms.FloatField(max_value=15, min_value=1, required=False, widget=forms.HiddenInput())
-    latitude = forms.FloatField(max_value=15, min_value=1, required=False, widget=forms.HiddenInput())
+    longitude = forms.FloatField(required=False, widget=forms.HiddenInput())
+    latitude = forms.FloatField(required=False, widget=forms.HiddenInput())

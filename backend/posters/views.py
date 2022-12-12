@@ -1,13 +1,12 @@
 from unicodedata import category
 from urllib.request import HTTPRedirectHandler
 from xml.etree.ElementTree import Comment
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import (Post, Category, Comment)
 from .forms import (PostForm, CategoryForm, CommentForm, GeoLocatorForm)
 from .functions import (get_client_ip, get_geolocation_by_ip, geocoder)
 from folium.plugins import LocateControl, Geocoder
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
@@ -20,10 +19,11 @@ def index(request):
     return HttpResponse(html)
 
 
-def create_geolocator(request):
+def set_geolocator(request, pk_post):
     template = 'posters/create_geolocator.html'
     context = {}
     map_loader = folium.Map(location=[20,20], zoom_start=2)
+    post_to_geolocator  = get_object_or_404(Post, id = pk_post)
 
     if request.method == 'POST':
 
@@ -31,9 +31,9 @@ def create_geolocator(request):
 
         if form.is_valid(): 
 
+            ubication = form.cleaned_data['ubication']
+            coordinates = geocoder(ubication)
             if 'locate' in request.POST:
-                ubication = form.cleaned_data['ubication']
-                coordinates = geocoder(ubication)
                 location =[coordinates['latitude'], coordinates['longitude']] 
                 map_loader = folium.Map(location=location, zoom_start=15)
                 folium.CircleMarker(
@@ -51,9 +51,11 @@ def create_geolocator(request):
 
 
             elif 'submit' in request.POST:
-
-                print('Saving')
-    
+                post_to_geolocator.latitude = coordinates['latitude']
+                post_to_geolocator.longitude = coordinates['longitude']
+                post_to_geolocator.save()
+                request.session['post_id'] = str(post_to_geolocator.id)
+                return redirect('/thanks/')
     else:
 
         form = GeoLocatorForm(initial={'latitude': '20', 'longitude': '20'})
@@ -66,6 +68,10 @@ def create_geolocator(request):
 
 
     return render(request, template, context=context)
+
+def congratulation_post_created(request):
+    print('POST ID: ',request.session['post_id'])
+    return HttpResponse('Hello Cowboys id of the post:'+request.session['post_id'])
 
 def list_post(request):
 
@@ -102,10 +108,15 @@ def edit_post(request, pk):
 
     #post_to_edit = Post.objects.filter(pk=pk)
 
-    if form.is_valid() and category_form.is_valid():
+
+    #print('errors:', form.errors)
+    if form.is_valid() and \
+    category_form.is_valid() and\
+    request.method == 'POST':
         post_to_edit.title = form.cleaned_data['title']
         post_to_edit.description = form.cleaned_data['description']
         post_to_edit.content = form.cleaned_data['content']
+        post_to_edit.address = form.cleaned_data['address']
         post_to_edit.updated_at = datetime.datetime.now()
         post_to_edit.status = form.cleaned_data['status']
         category_to_edit = Category.objects.get_or_create(**category_form.cleaned_data)[0]
@@ -126,7 +137,7 @@ def edit_post(request, pk):
     return render(request, template, context=context)
 
 def delete_post(request, pk):
-    template = 'posters/succesfully.html', 
+    template = 'posters/succesfully.html'
     post_to_delete = get_object_or_404(Post, id = pk)
     post_to_delete.delete()
     data = {'message': 'Post deleted succesfully'}
