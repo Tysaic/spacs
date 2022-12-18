@@ -12,6 +12,11 @@ from posters.models import Post
 
 class TestUrls(TestCase):
 
+    '''
+    The main objective of this test is assert if equal the resolve url with the reverse
+    with primary keys
+    '''
+
     def setUp(self):
 
         self.post = Post.objects.create(

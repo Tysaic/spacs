@@ -43,11 +43,15 @@ class Post(models.Model):
     status = models.CharField(max_length = 32, choices = status_post, default='1')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(default='20')
+    longitude = models.FloatField(default='20')
 
     def __str__(self):
         return self.title
+    
+    def get_latitude_longitude(self):
+
+        return (self.latitude, self.longitude)
 
 class Comment(models.Model):
     comment = models.TextField(max_length = 255)
