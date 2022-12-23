@@ -1,11 +1,12 @@
-FROM alpine:3.14 AS builder
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
-WORKDIR /app
+FROM python:3.9
+
+ENV PYTHONUNBUFFERED 1
+
+COPY . /code/
+WORKDIR /code/
+
+RUN pip install -r requirements.txt
+#RUN pip install pipenv
+#RUN pipenv install --system
 EXPOSE 8000
-COPY requirements.txt /app
-#RUN pip3 install -r requirements.txt --no-cache-dir
-ENTRYPOINT ['python3']
-CMD ['manage.py', 'runserver', '0.0.0.0:8000']
+CMD [ "python3", "./manage.py", "runserver", "0.0.0.0:8000"]

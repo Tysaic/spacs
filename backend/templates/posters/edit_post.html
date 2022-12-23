@@ -1,12 +1,13 @@
-<h1>Edit Post</h1>
+{% extends 'base.html' %}
+{% block title %}Edit Post{% endblock %}
+{% block content %}
+    <form method="POST" enctype="multipart/form-data">
 
-
-<form method="POST" enctype="multipart/form-data">
-
-    {% csrf_token %}
-    {{ form.as_p }}
-    {{ category_form.as_p }}
-    {{created_at.as_p}}
-    {{updated_at.as_p}}
-    <input type="submit" value="Enviar">
-</form>
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ category_form.as_p }}
+        {{created_at.as_p}}
+        {{updated_at.as_p}}
+        <input type="submit" value="Enviar">
+    </form>
+{% endblock content %}

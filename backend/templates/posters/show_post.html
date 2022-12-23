@@ -1,16 +1,22 @@
-<h1>{{data.title}}</h1>
-<h2>{{data.description}}</h2>
-<p>{{data.content.as_p}}</p>
-<span>{{data.category}}</span>
+{% extends 'base.html' %}
+{% block title %}Show Post{% endblock %}
+{% block content %}
+
+    <h1>{{data.title}}</h1>
+    <h2>{{data.description}}</h2>
+    <p>{{data.content.as_p}}</p>
+    <span>{{data.category}}</span>
 
 
-{% for comment in comments %}
-    <p>{{comment.comment}} - {{comment.created_at}}</p>
-{% endfor %}
+    {% for comment in comments %}
+        <p>{{comment.comment}} - {{comment.created_at}}</p>
+    {% endfor %}
 
-<h3>Comment Here:</h3>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{comment_form.as_p}}
-    <input type="submit" value="Enviar">
-</form>
+    <h3>Comment Here:</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{comment_form.as_p}}
+        <input type="submit" value="Enviar">
+    </form>
+
+{% endblock content %}

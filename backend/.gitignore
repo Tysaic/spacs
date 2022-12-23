@@ -7,3 +7,4 @@ posters/migrations/__pycache__
 posters/migrations/__pycache__/*
 posters/migrations/__pycache__/*.pyc
 db.sqlite3
+static/img/*
