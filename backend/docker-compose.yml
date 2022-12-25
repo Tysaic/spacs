@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  web:
+    container_name: django-app-spacs
+    image: python:3.9
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code/
