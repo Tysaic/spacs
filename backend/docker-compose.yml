@@ -1,10 +1,31 @@
 version: "3.9"
 services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=database
+      - POSTGRES_DB=spacs_db
+      - POSTGRES_PASSWORD=database123
+    volumes:
+      - pgdata:/var/lib/posgresql/data
   web:
     container_name: django-app-spacs
     image: python:3.9
     build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+      - migrations
     ports:
       - "8000:8000"
     volumes:
       - .:/code/
+  migration:
+    image: python:3.9
+    command: python3 manage.py makemigrations; python3 manage.py migrate --noinput;
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+volumes:
+  pgdata:

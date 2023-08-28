@@ -1,0 +1,32 @@
+.author div{
+    font-size: 10px;
+    float: left;
+    padding-right: .5rem;
+}
+.category{
+    color: grey;
+    float:left;
+}
+.logo{
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.nav-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-media-box{
+    color: white;
+}
+
+.little-container{
+    padding: 0.1rem !important;
+    margin: 0.4rem;
+    border: 0.1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

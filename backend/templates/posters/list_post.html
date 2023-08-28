@@ -4,10 +4,26 @@
 
 {% block content %}
     {% for post in posts %}
-        <p>
-            {{ post.title }}
-            {{ post.author}}
-        </p>
+        <div class="social-media-box col-6 mx-auto">
+            <div class="little-container">
+                <header>
+                    <h1> {{ post.title }} </h1>
+                </header>
+                <div class="description">
+                    {{ post.description }}
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum iste eaque sunt adipisci qui deleniti voluptas, harum reiciendis dolores est accusamus? Ipsam voluptates id hic aliquam vitae! Molestias, quibusdam unde!
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis quaerat doloremque placeat obcaecati consequuntur illum, ipsum veniam quasi in culpa ex, impedit vitae voluptates quia id quidem provident. Officia, assumenda!
+                </div>
+                <div class="text-sm-start author">
+                    <div>
+                        Posted by: {{ post.author}}
+                    </div>
+                    <div class="category">
+                        Category: <span>{{ post.category.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     {%endfor%}
 {% endblock %}
 
