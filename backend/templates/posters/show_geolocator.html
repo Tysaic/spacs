@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Show Geolocator{% endblock %}
+{% block content %}
+
+    <h1>Show Locator</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <!--
+        <label for="ubication">Ubication:</label>
+        <input id='ubication' name="ubication" maxlength="128" type="text" required>
+        -->
+        <div id="map" style="width:800px;">
+            {{map | safe}}
+        </div>
+    </form>
+{% endblock %}
+

@@ -24,6 +24,7 @@ class Category(models.Model):
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=32)
     image = models.ImageField()
     created_at = models.DateField(auto_now=True)
     updated_at = models.DateField(auto_now_add=True)

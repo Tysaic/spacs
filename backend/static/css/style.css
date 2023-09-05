@@ -1,3 +1,8 @@
+/*IDs*/
+#main-navbar{
+    position: fixed;
+}
+/*Classes*/
 .author div{
     font-size: 10px;
     float: left;

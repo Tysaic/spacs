@@ -19,6 +19,29 @@ def index(request):
     return HttpResponse(html)
 
 
+def show_geolocator(request, pk_post):
+    template = 'posters/show_geolocator.html'
+    map_loader = folium.Map(location=[20,20], zoom_start=2)
+    post_to_geolocator = get_object_or_404(Post, id = pk_post)
+    # Geolocator
+    latitude, longitude = post_to_geolocator.latitude, post_to_geolocator.longitude
+    location = [latitude,longitude]
+    map_loader = folium.Map(location=location, zoom_start=15)
+    folium.CircleMarker(
+        location=location,
+        radius=50,
+        popup=post_to_geolocator.address,
+        color = '#3186cc',
+        fill_color='#3186cc'
+    ).add_to(map_loader)
+
+    LocateControl().add_to(map_loader)
+    Geocoder(collapsed=True, add_marker=True).add_to(map_loader)
+    map_loader = map_loader._repr_html_()
+    context = {'map': map_loader}
+
+    return render(request, template, context=context)
+
 def set_geolocator(request, pk_post):
     template = 'posters/create_geolocator.html'
     context = {}
